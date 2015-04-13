@@ -1,0 +1,20 @@
+{
+  "name": "eaglemoor/boxy",
+  "description": "Boxy component for yii2",
+  "keywords": ["yii2", "rest api", "api"],
+  "type": "yii2-extension",
+  "license": "GNU GENERAL PUBLIC LICENSE",
+  "authors": [
+    {
+      "name": "EagleMoor",
+      "email": "eaglemoor@webspirit.pro"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "*",
+    "yiisoft/yii2-redis": "*"
+  },
+  "autoload": {
+    "psr-4": { "yii\\boxy\\": "" }
+  }
+}
