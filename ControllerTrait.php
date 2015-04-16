@@ -21,7 +21,7 @@ trait ControllerTrait {
 
         $fields = \Yii::getObjectVars($this);
 
-        $authExcept = (isset($fields['authExcept'])) ? $fields['authExcept'] : false;
+        $authExcept = (isset($fields['authExcept'])) ? $fields['authExcept'] : [];
 
         if (false !== $authExcept) {
             $behaviors['authenticator'] = [
