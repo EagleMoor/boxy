@@ -2,36 +2,35 @@
 /**
  * Created by PhpStorm.
  * User: eaglemoor
- * Date: 13.04.15
- * Time: 18:25
+ * Date: 15.04.15
+ * Time: 17:54
  */
 
 namespace yii\boxy;
 
-
+use yii\base\InvalidConfigException;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\web\NotFoundHttpException;
 
-class Controller extends \yii\rest\Controller {
-
-    public $modelClass;
-
-    protected $authExcept = [];
-
+trait ControllerTrait {
     public function behaviors()
     {
         $behaviors = parent::behaviors();
 
-        if (false !== $this->authExcept) {
+        $fields = \Yii::getObjectVars($this);
+
+        $authExcept = (isset($fields['authExcept'])) ? $fields['authExcept'] : false;
+
+        if (false !== $authExcept) {
             $behaviors['authenticator'] = [
                 'class' => CompositeAuth::className(),
                 'authMethods' => [
                     HttpBearerAuth::className(),
                     QueryParamAuth::className(),
                 ],
-                'except' => $this->authExcept
+                'except' => $authExcept
             ];
         }
 
@@ -46,9 +45,18 @@ class Controller extends \yii\rest\Controller {
      */
     public function findModel($id, $modelClass = null)
     {
-        if (null === $modelClass) $modelClass = $this->modelClass;
+        $findModelClass = $modelClass;
 
-        $object = $modelClass::findOne($id);
+        $fields = \Yii::getObjectVars($this);
+
+        if (isset($fields['modelClass']) && $fields['modelClass'])
+            $findModelClass = $fields['modelClass'];
+
+        if (!$findModelClass) {
+            throw new InvalidConfigException('Not set $modelClass');
+        }
+
+        $object = $findModelClass::findOne($id);
         if (!$object) {
             throw new NotFoundHttpException("Object not found: $id");
         } else {
@@ -62,8 +70,15 @@ class Controller extends \yii\rest\Controller {
      */
     public function extraParams()
     {
+        $params = \Yii::getObjectVars($this);
+        $serializer = 'yii\rest\Serializer';
+        if (isset($params['serializer'])) {
+            $serializer = $params['serializer'];
+        }
+
         /** @var \yii\rest\Serializer $serializer */
         $serializer = \Yii::createObject($this->serializer);
+
         return array_merge($serializer->requestedFields[0], $serializer->requestedFields[1]);
     }
 }

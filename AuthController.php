@@ -9,13 +9,16 @@
 namespace yii\boxy;
 
 
+use yii\rest\Controller;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
 
 class AuthController extends Controller {
-    public $modelClass;
+    use ControllerTrait;
 
     protected $authExcept = ['auth'];
+
+    public $modelClass;
 
     public function init() {
         if ($this->modelClass === null) {
