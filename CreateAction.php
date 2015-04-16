@@ -10,6 +10,7 @@ namespace yii\boxy;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
+use yii\rest\Action;
 use yii\web\ServerErrorHttpException;
 
 /**
