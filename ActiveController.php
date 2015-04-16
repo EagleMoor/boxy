@@ -10,8 +10,6 @@ namespace yii\boxy;
 
 class ActiveController extends \yii\rest\ActiveController {
 
-    use ControllerTrait;
-
     public function actions()
     {
         $actions = parent::actions();
