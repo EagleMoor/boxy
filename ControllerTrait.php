@@ -15,6 +15,17 @@ use yii\filters\auth\QueryParamAuth;
 use yii\web\NotFoundHttpException;
 
 trait ControllerTrait {
+
+    /**
+     * Добавление модуля авторизации
+     *
+     * ```php
+     * $authExcept = false — отключить авторизацию
+     * $authExcept = [] — включить авторизацию
+     * $authExcept = ['auth'] — включить авторизацию везде, кроме actionAuth
+     * ```
+     * @return mixed
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -38,6 +49,12 @@ trait ControllerTrait {
     }
 
     /**
+     * Поиск модели по id
+     *
+     * ```php
+     * $modelClass = 'app\models\User';
+     * ```
+     *
      * @param $id
      * @param string $modelClass
      * @return \yii\db\ActiveRecordInterface
@@ -65,6 +82,12 @@ trait ControllerTrait {
     }
 
     /**
+     * Все параметры по fields & expand
+     *
+     * ```php
+     * url?fields=id,name&expand=object
+     * ```
+     *
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
