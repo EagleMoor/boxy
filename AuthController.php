@@ -16,7 +16,9 @@ use yii\web\UnauthorizedHttpException;
 class AuthController extends Controller {
     use ControllerTrait;
 
-    protected $authExcept = ['auth'];
+    public function authExcept() {
+        return ['auth'];
+    }
 
     public $modelClass;
 

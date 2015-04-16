@@ -16,6 +16,10 @@ use yii\web\NotFoundHttpException;
 
 trait ControllerTrait {
 
+    protected function authExcept() {
+        return [];
+    }
+
     /**
      * Добавление модуля авторизации
      *
@@ -30,9 +34,7 @@ trait ControllerTrait {
     {
         $behaviors = parent::behaviors();
 
-        $fields = \Yii::getObjectVars($this);
-
-        $authExcept = (isset($fields['authExcept'])) ? $fields['authExcept'] : [];
+        $authExcept = $this->authExcept();
 
         if (false !== $authExcept) {
             $behaviors['authenticator'] = [
