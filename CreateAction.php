@@ -61,10 +61,12 @@ class CreateAction extends Action
                 $params = [$this->viewAction, 'id' => $id];
             }
 
-            $response->getHeaders()->set('Location', Url::toRoute($params, true));
+            $response->getHeaders()->set('Link', Url::toRoute($params, true));
         } elseif (!$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
         }
+
+        $model->refresh();
 
         return $model;
     }
