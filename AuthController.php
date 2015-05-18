@@ -9,11 +9,7 @@
 namespace yii\boxy;
 
 
-use yii\rest\Controller;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnauthorizedHttpException;
-
-class AuthController extends Controller {
+class AuthController extends \yii\rest\Controller {
     use ControllerTrait;
 
     public function authExcept() {
@@ -35,19 +31,20 @@ class AuthController extends Controller {
      *
      * @param string $login
      * @param string $password
+     *
      * @return array
-     * @throws UnauthorizedHttpException
+     * @throws \yii\web\UnauthorizedHttpException
      */
     public function actionAuth($login, $password) {
         /** @var User $modelClass */
         $modelClass = $this->modelClass;
         $user = $modelClass::findByLogin($login);
         if (!$user) {
-            throw new UnauthorizedHttpException("User with login, email or phone not found");
+            throw new \yii\web\UnauthorizedHttpException("User with login, email or phone not found");
         }
 
         if (!$user->validatePassword($password)) {
-            throw new UnauthorizedHttpException("Not valid password");
+            throw new \yii\web\UnauthorizedHttpException("Not valid password");
         }
 
         $token = AccessToken::generateForUser($user);
@@ -61,7 +58,7 @@ class AuthController extends Controller {
     /**
      * Выход и удаление токена
      *
-     * @throws ServerErrorHttpException
+     * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\db\StaleObjectException
      */
     public function actionLogout() {
@@ -69,7 +66,7 @@ class AuthController extends Controller {
         $accessToken = AccessToken::findOne(['id' => $token, 'user_uid' => \Yii::$app->user->getId()]);
 
         if ($accessToken->delete() === false) {
-            throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
+            throw new \yii\web\ServerErrorHttpException('Failed to delete the object for unknown reason.');
         }
 
         \Yii::$app->getResponse()->setStatusCode(204);

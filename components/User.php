@@ -8,10 +8,9 @@
 
 namespace yii\boxy\components;
 
-use yii\base\InvalidConfigException;
-
 /**
  * Class User
+ *
  * @package yii\boxy\components
  *
  *
@@ -33,7 +32,7 @@ class User extends \yii\web\User {
         parent::init();
 
         if ($this->accessTokenClass === null) {
-            throw new InvalidConfigException('User::accessTokenClass must be set.');
+            throw new \yii\base\InvalidConfigException('User::accessTokenClass must be set.');
         }
     }
 }

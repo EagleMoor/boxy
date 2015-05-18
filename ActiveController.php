@@ -10,8 +10,7 @@ namespace yii\boxy;
 
 class ActiveController extends \yii\rest\ActiveController {
 
-    public function actions()
-    {
+    public function actions() {
         $actions = parent::actions();
         if (isset($actions['create'])) {
             $actions['create']['class'] = 'yii\boxy\CreateAction';

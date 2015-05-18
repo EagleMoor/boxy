@@ -10,8 +10,8 @@ namespace yii\boxy;
 
 
 class Helper {
-    public static function arr2pgarr($value){
-        foreach ((array)$value as $inner) {
+    public static function arr2pgarr($value) {
+        foreach ((array) $value as $inner) {
             if (is_array($inner)) $parts[] = arr2pgarr($inner);
             elseif ($inner === null) {
                 $parts[] = 'NULL';
@@ -19,17 +19,17 @@ class Helper {
                 $parts[] = '"' . addcslashes($inner, "\"\\") . '"';
             }
         }
-        return '{' . join(",", (array)$parts) . '}';
+        return '{' . join(",", (array) $parts) . '}';
     }
 
-    public static function pgarr2arr($str, $start=0){
+    public static function pgarr2arr($str, $start = 0) {
         static $p;
-        $charAfterSpaces = function ($str, &$p){
+        $charAfterSpaces = function ($str, &$p) {
             $p += strspn($str, " \t\r\n", $p);
             return substr($str, $p, 1);
         };
 
-        if ($start==0) $p=0;
+        if ($start == 0) $p = 0;
         $result = array();
 
         // Leading "{".

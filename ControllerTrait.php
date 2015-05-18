@@ -8,12 +8,6 @@
 
 namespace yii\boxy;
 
-use yii\base\InvalidConfigException;
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
-use yii\web\NotFoundHttpException;
-
 trait ControllerTrait {
 
     protected function authExcept() {
@@ -28,20 +22,20 @@ trait ControllerTrait {
      * $authExcept = [] — включить авторизацию
      * $authExcept = ['auth'] — включить авторизацию везде, кроме actionAuth
      * ```
+     *
      * @return mixed
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         $behaviors = parent::behaviors();
 
         $authExcept = $this->authExcept();
 
         if (false !== $authExcept) {
             $behaviors['authenticator'] = [
-                'class' => CompositeAuth::className(),
+                'class' => \yii\filters\auth\CompositeAuth::className(),
                 'authMethods' => [
-                    HttpBearerAuth::className(),
-                    QueryParamAuth::className(),
+                    \yii\filters\auth\HttpBearerAuth::className(),
+                    \yii\filters\auth\QueryParamAuth::className(),
                 ],
                 'except' => $authExcept
             ];
@@ -59,11 +53,11 @@ trait ControllerTrait {
      *
      * @param $id
      * @param string $modelClass
+     *
      * @return \yii\db\ActiveRecordInterface
-     * @throws NotFoundHttpException
+     * @throws \yii\filters\auth\NotFoundHttpException
      */
-    public function findModel($id, $modelClass = null)
-    {
+    public function findModel($id, $modelClass = null) {
         $findModelClass = $modelClass;
 
         $fields = \Yii::getObjectVars($this);
@@ -72,12 +66,12 @@ trait ControllerTrait {
             $findModelClass = $fields['modelClass'];
 
         if (!$findModelClass) {
-            throw new InvalidConfigException('Not set $modelClass');
+            throw new \yii\base\InvalidConfigException('Not set $modelClass');
         }
 
         $object = $findModelClass::findOne($id);
         if (!$object) {
-            throw new NotFoundHttpException("Object not found: $id");
+            throw new \yii\filters\auth\NotFoundHttpException("Object not found: $id");
         } else {
             return $object;
         }
@@ -93,8 +87,7 @@ trait ControllerTrait {
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    public function extraParams()
-    {
+    public function extraParams() {
         $params = \Yii::getObjectVars($this);
         $serializer = 'yii\rest\Serializer';
         if (isset($params['serializer'])) {

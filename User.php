@@ -8,27 +8,21 @@
 
 namespace yii\boxy;
 
-
-use yii\db\ActiveRecord;
-use yii\web\IdentityInterface;
-
-abstract class User extends ActiveRecord implements IdentityInterface {
+abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
 
     public $accessToken;
 
     /**
      * @inheritdoc
      */
-    public static function findIdentity($id)
-    {
+    public static function findIdentity($id) {
         return static::findOne($id);
     }
 
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
+    public static function findIdentityByAccessToken($token, $type = null) {
         $accessTokenClass = \Yii::$app->user->accessTokenClass;
 
         /** @var AccessToken $accessToken */
@@ -51,10 +45,10 @@ abstract class User extends ActiveRecord implements IdentityInterface {
      * Login user by login, email or phone
      *
      * @param $login
+     *
      * @return static|null
      */
-    public static function findByLogin($login)
-    {
+    public static function findByLogin($login) {
         // try login as login, email or phone
         $userQuery = static::find();
         $userQuery->where(['login' => $login]);
@@ -65,24 +59,21 @@ abstract class User extends ActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->getPrimaryKey();
     }
 
     /**
      * @inheritdoc
      */
-    public function getAuthKey()
-    {
+    public function getAuthKey() {
         throw new \BadMethodCallException;
     }
 
     /**
      * @inheritdoc
      */
-    public function validateAuthKey($authKey)
-    {
+    public function validateAuthKey($authKey) {
         throw new \BadMethodCallException;
     }
 
@@ -90,6 +81,7 @@ abstract class User extends ActiveRecord implements IdentityInterface {
      * Валидация пароля
      *
      * @param $password
+     *
      * @return bool
      */
     abstract public function validatePassword($password);

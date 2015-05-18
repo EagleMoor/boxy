@@ -8,9 +8,6 @@
 
 namespace yii\boxy;
 
-use yii\base\Security;
-use yii\redis\ActiveRecord;
-
 /**
  * Class AccessToken
  *
@@ -44,27 +41,23 @@ use yii\redis\ActiveRecord;
  * Magic property
  * @property $users
  */
-class AccessToken extends ActiveRecord
-{
-    public function init()
-    {
+class AccessToken extends \yii\redis\ActiveRecord {
+    public function init() {
         parent::init();
 
-        $this->on(self::EVENT_BEFORE_INSERT, function($event) {
-            $event->sender->id = self::buildKey((new Security)->generateRandomString());
+        $this->on(self::EVENT_BEFORE_INSERT, function ($event) {
+            $event->sender->id = self::buildKey((new \yii\base\Security)->generateRandomString());
         });
     }
 
     /**
      * @inheritdoc
      */
-    public function attributes()
-    {
+    public function attributes() {
         return ['id', 'user_uid', 'r', 'w', 'ip', 'la', 'd', 'ttl'];
     }
 
-    public function fields()
-    {
+    public function fields() {
         return [
             'id',
             'user_uid',
@@ -72,7 +65,7 @@ class AccessToken extends ActiveRecord
             'w',
             'ip',
             'la',
-            'd' => function($accessToken) {
+            'd' => function ($accessToken) {
                 return (is_string($accessToken->d)) ? json_decode($accessToken->d) : $accessToken->d;
             },
             'ttl'
@@ -83,10 +76,10 @@ class AccessToken extends ActiveRecord
      * Генерация токена для пользователя
      *
      * @param User $user
+     *
      * @return false|AccessToken
      */
-    public static function generateForUser(User $user)
-    {
+    public static function generateForUser(User $user) {
         $accessToken = new static([
             'user_uid' => $user->getId(),
             'r' => 1,
@@ -106,14 +99,12 @@ class AccessToken extends ActiveRecord
     /**
      * @return User|null
      */
-    public function getUser()
-    {
+    public function getUser() {
         $userClass = \Yii::$app->user->identityClass;
         return $userClass::findIdentity($this->user_uid);
     }
 
-    public function beforeSave($insert)
-    {
+    public function beforeSave($insert) {
         if (is_array($this->d)) {
             $this->d = json_encode($this->d);
         }
