@@ -35,7 +35,14 @@ class AuthController extends \yii\rest\Controller {
      * @return array
      * @throws \yii\web\UnauthorizedHttpException
      */
-    public function actionAuth($login, $password) {
+    public function actionAuth() {
+        $login = \Yii::$app->getRequest()->getBodyParam('login');
+        $password = \Yii::$app->getRequest()->getBodyParam('password');
+
+        if (empty($login) || empty($password)) {
+            throw new \yii\web\UnauthorizedHttpException("Login or/and password is empty");
+        }
+
         /** @var User $modelClass */
         $modelClass = $this->modelClass;
         $user = $modelClass::findByLogin($login);
