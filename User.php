@@ -8,7 +8,7 @@
 
 namespace yii\boxy;
 
-abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface {
+abstract class User extends \yii\boxy\ActiveRecord implements \yii\web\IdentityInterface {
 
     public $accessToken;
 
