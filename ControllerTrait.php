@@ -11,8 +11,13 @@ namespace yii\boxy;
 trait ControllerTrait {
 
     protected function authExcept() {
+        if ($this instanceof \yii\console\Controller) return false;
         return [];
     }
+
+//    protected function accessControl() {
+//        return false;
+//    }
 
     /**
      * Добавление модуля авторизации
@@ -41,6 +46,16 @@ trait ControllerTrait {
             ];
         }
 
+//        $accessControl = $this->accessControl();
+//        if (false !== $accessControl && is_array($accessControl)) {
+//            $accessControl = \yii\helpers\ArrayHelper::merge([
+//                'class' => 'yii\filters\AccessControl',
+//                'ruleConfig' => ['class' => 'yii\boxy\AccessRule'],
+//                'rules' => []
+//            ], $accessControl);
+//            $behaviors['access'] = $accessControl;
+//        }
+
         return $behaviors;
     }
 
@@ -60,10 +75,12 @@ trait ControllerTrait {
     public function findModel($id, $modelClass = null) {
         $findModelClass = $modelClass;
 
-        $fields = \Yii::getObjectVars($this);
+        if (null == $findModelClass) {
+            $fields = \Yii::getObjectVars($this);
 
-        if (isset($fields['modelClass']) && $fields['modelClass'])
-            $findModelClass = $fields['modelClass'];
+            if (!$findModelClass && isset($fields['modelClass']) && $fields['modelClass'])
+                $findModelClass = $fields['modelClass'];
+        }
 
         if (!$findModelClass) {
             throw new \yii\base\InvalidConfigException('Not set $modelClass');
@@ -71,7 +88,7 @@ trait ControllerTrait {
 
         $object = $findModelClass::findOne($id);
         if (!$object) {
-            throw new \yii\filters\auth\NotFoundHttpException("Object not found: $id");
+            throw new \yii\web\NotFoundHttpException("Object not found: $id");
         } else {
             return $object;
         }
