@@ -9,6 +9,17 @@
 namespace yii\boxy;
 
 
+use Yii;
+use yii\base\Arrayable;
+use yii\base\Component;
+use yii\base\Model;
+use yii\data\DataProviderInterface;
+use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
+use yii\web\Link;
+use yii\web\Request;
+use yii\web\Response;
+
 class Serializer extends \yii\rest\Serializer {
     public $afterSerializeModels;
 
@@ -30,27 +41,27 @@ class Serializer extends \yii\rest\Serializer {
 //        return $models;
 //    }
 
-//    /**
-//     * Serializes a set of models.
-//     * @param array $models
-//     * @return array the array representation of the models
-//     */
-//    protected function serializeModels(array $models)
-//    {
-//        list ($fields, $expand) = $this->getRequestedFields();
-//        foreach ($models as $i => $model) {
-//            if ($model instanceof Arrayable) {
-//                $models[$i] = $model->toArray($fields, $expand);
-//            } elseif (is_array($model)) {
-//                $models[$i] = ArrayHelper::toArray($model);
-//            }
-//        }
-//
-////        if ($this->afterSerializeModels) {
-////            return call_user_func($this->afterSerializeModels, $models);
-////        }
-//
+    /**
+     * Serializes a set of models.
+     * @param array $models
+     * @return array the array representation of the models
+     */
+    protected function serializeModels(array $models)
+    {
+        list ($fields, $expand) = $this->getRequestedFields();
+        foreach ($models as $i => $model) {
+            if ($model instanceof Arrayable) {
+                $models[$i] = $model->toArray($fields, $expand);
+            } elseif (is_array($model)) {
+                $models[$i] = ArrayHelper::toArray($model);
+            }
+        }
+
+        if ($this->afterSerializeModels) {
+            return call_user_func($this->afterSerializeModels, $models);
+        }
+
 //        var_dump($models); die;
-//        return $models;
-//    }
+        return $models;
+    }
 }
