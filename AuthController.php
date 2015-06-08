@@ -40,18 +40,18 @@ class AuthController extends \yii\rest\Controller {
         $password = \Yii::$app->getRequest()->getBodyParam('password');
 
         if (empty($login) || empty($password)) {
-            throw new \yii\web\UnauthorizedHttpException("Login or/and password is empty");
+            throw new \yii\web\UnauthorizedHttpException("Вы не ввели логин и/или пароль");
         }
 
         /** @var User $modelClass */
         $modelClass = $this->modelClass;
         $user = $modelClass::findByLogin($login);
         if (!$user) {
-            throw new \yii\web\UnauthorizedHttpException("User with login, email or phone not found");
+            throw new \yii\web\UnauthorizedHttpException("Пользователь с таким логином не найден");
         }
 
         if (!$user->validatePassword($password)) {
-            throw new \yii\web\UnauthorizedHttpException("Not valid password");
+            throw new \yii\web\UnauthorizedHttpException("Вы неверно указали пароль");
         }
 
         $token = AccessToken::generateForUser($user);
