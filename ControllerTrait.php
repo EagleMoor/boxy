@@ -70,7 +70,8 @@ trait ControllerTrait {
      * @param string $modelClass
      *
      * @return \yii\db\ActiveRecordInterface
-     * @throws \yii\filters\auth\NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
      */
     public function findModel($id, $modelClass = null) {
         $findModelClass = $modelClass;

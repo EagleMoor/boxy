@@ -29,11 +29,10 @@ class AuthController extends \yii\rest\Controller {
     /**
      * Залогинивание и получение token для работы в системе
      *
-     * @param string $login
-     * @param string $password
-     *
      * @return array
      * @throws \yii\web\UnauthorizedHttpException
+     * @internal param string $login
+     * @internal param string $password
      */
     public function actionAuth() {
         $login = \Yii::$app->getRequest()->getBodyParam('login');
@@ -54,7 +53,8 @@ class AuthController extends \yii\rest\Controller {
             throw new \yii\web\UnauthorizedHttpException("Вы неверно указали пароль");
         }
 
-        $token = AccessToken::generateForUser($user);
+        $accessTokenClass = \Yii::$app->user->accessTokenClass;
+        $token = $accessTokenClass::generateForUser($user);
 
         return [
             'user' => $user,
@@ -70,7 +70,8 @@ class AuthController extends \yii\rest\Controller {
      */
     public function actionLogout() {
         $token = \Yii::$app->user->getIdentity()->accessToken;
-        $accessToken = AccessToken::findOne(['id' => $token, 'user_uid' => \Yii::$app->user->getId()]);
+        $accessTokenClass = \Yii::$app->user->accessTokenClass;
+        $accessToken = $accessTokenClass::findOne(['id' => $token, 'user_uid' => \Yii::$app->user->getId()]);
 
         if ($accessToken->delete() === false) {
             throw new \yii\web\ServerErrorHttpException('Failed to delete the object for unknown reason.');

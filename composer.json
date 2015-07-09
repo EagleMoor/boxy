@@ -15,6 +15,6 @@
     "yiisoft/yii2-redis": "*"
   },
   "autoload": {
-    "psr-4": { "yii\\boxy\\": "" }
+    "psr-4": { "yii\\boxy\\": "", "yii\\maps\\": "maps/" }
   }
 }
