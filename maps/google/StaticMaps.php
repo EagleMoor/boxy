@@ -85,6 +85,9 @@ class StaticMaps extends \yii\base\Object {
             }
         }
 
+        if ($this->zoom)
+            $params[] = 'zoom=' . $this->zoom;
+
         return $url . '&' . implode('&', $params);
     }
 
