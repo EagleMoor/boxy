@@ -1,0 +1,36 @@
+Extended Logger:
+
+'components' => [
+        'log' => [
+            'class' =>  'yii\boxy_debug\Dispatcher',
+        ...
+
+
+
+Debug Module:
+Debug module, works only in debug mode (YII_DEBUG == true) and assumes Yii Debug module is one.
+It adds extra response header: Debug-Id - Yii-Debug Tag, use it to check out Yii debug profiling.
+Url: /debug/default/view?tag=Debug-Id
+
+Config:
+'modules' => [
+        'rest_debug' => [
+            'class' =>'yii\boxy_debug\Module',
+            'timeLimit' => 0.2,
+            'logCategory' => 'overhead',
+        ],
+]
+
+U must bootstrap the module!
+
+Parameters
+timeLimit - time threshold to log statistics
+logCategory - Log catecory
+
+Headers Example:
+X-Debug-Id: 55ce00728e840
+X-Overhead-Time: 0.3636
+
+Log Example
+Debug Id 	Time 	Memory
+55ce044b4c648 	0.5540 s 	3.4 MB

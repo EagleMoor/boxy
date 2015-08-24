@@ -8,6 +8,11 @@
     {
       "name": "EagleMoor",
       "email": "eaglemoor@webspirit.pro"
+    },
+    {
+      "name": "Ivakimaki",
+      "email": "ivakimaki@gmail.com",
+      "role": "Developer"
     }
   ],
   "require": {
@@ -15,6 +20,6 @@
     "yiisoft/yii2-redis": "*"
   },
   "autoload": {
-    "psr-4": { "yii\\boxy\\": "", "yii\\maps\\": "maps/" }
+    "psr-4": { "yii\\boxy\\": "", "yii\\maps\\": "maps/", "yii\\boxy_debug\\": "debug/" }
   }
 }
