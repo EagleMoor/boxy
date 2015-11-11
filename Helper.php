@@ -9,9 +9,11 @@
 namespace yii\boxy;
 
 
-class Helper {
-    public static function arr2pgarr($value) {
-        foreach ((array) $value as $inner) {
+class Helper
+{
+    public static function arr2pgarr($value)
+    {
+        foreach ((array)$value as $inner) {
             if (is_array($inner)) $parts[] = arr2pgarr($inner);
             elseif ($inner === null) {
                 $parts[] = 'NULL';
@@ -19,10 +21,11 @@ class Helper {
                 $parts[] = '"' . addcslashes($inner, "\"\\") . '"';
             }
         }
-        return '{' . join(",", (array) $parts) . '}';
+        return '{' . join(",", (array)$parts) . '}';
     }
 
-    public static function pgarr2arr($str, $start = 0) {
+    public static function pgarr2arr($str, $start = 0)
+    {
         static $p;
         $charAfterSpaces = function ($str, &$p) {
             $p += strspn($str, " \t\r\n", $p);
@@ -87,6 +90,21 @@ class Helper {
         }
 
         return $result;
+    }
 
+    public static function sortAndFilterQuery(\yii\db\QueryInterface &$query, $model = null)
+    {
+        $sort = \Yii::$app->request->getQueryParam('sort');
+        if ($sort) {
+            $order = (0 === strpos($sort, '-')) ? substr($sort, 1) . ' DESC' : $sort . ' ASC';
+            $query->orderBy($order);
+        }
+
+        $filter = \Yii::$app->request->getQueryParam('filter');
+        if (is_array($filter)) {
+            foreach ($filter as $key => $value) {
+                $query->andFilterWhere(['ilike', $key, $value]);
+            }
+        }
     }
 }
