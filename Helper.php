@@ -14,7 +14,7 @@ class Helper
     public static function arr2pgarr($value)
     {
         foreach ((array)$value as $inner) {
-            if (is_array($inner)) $parts[] = arr2pgarr($inner);
+            if (is_array($inner)) $parts[] = self::arr2pgarr($inner);
             elseif ($inner === null) {
                 $parts[] = 'NULL';
             } else {
@@ -63,7 +63,7 @@ class Helper
 
             // Sub-array.
             if ($c == '{') {
-                $result[] = pgarr2arr($str, $p);
+                $result[] = self::pgarr2arr($str, $p);
                 continue;
             }
 
@@ -94,16 +94,44 @@ class Helper
 
     public static function sortAndFilterQuery(\yii\db\QueryInterface &$query, $model = null)
     {
+        $model = (is_string($model)) ? new $model : $model;
+
         $sort = \Yii::$app->request->getQueryParam('sort');
         if ($sort) {
-            $order = (0 === strpos($sort, '-')) ? substr($sort, 1) . ' DESC' : $sort . ' ASC';
-            $query->orderBy($order);
+            $key = (0 === strpos($sort, '-')) ? substr($sort, 1) : $sort;
+            $fKey = null;
+
+            if ($model instanceof \yii\boxy\ActiveRecord) {
+                $fKey = $model->getAttributeRealName($key);
+            } elseif ($model instanceof \yii\db\ActiveRecord) {
+                if ($model->getTableSchema()->getColumn($key)) {
+                    $fKey = $key;
+                }
+            } elseif ($model instanceof \yii\base\Model) {
+                $fKey = (isset($model->attributes()[$key])) ? $model->attributes()[$key] : null;
+            } else $fKey = $key;
+
+            if ($fKey) {
+                $order = (0 === strpos($sort, '-')) ? "$fKey DESC" : "$fKey ASC";
+                $query->orderBy($order);
+            }
         }
 
         $filter = \Yii::$app->request->getQueryParam('filter');
         if (is_array($filter)) {
             foreach ($filter as $key => $value) {
-                $query->andFilterWhere(['ilike', $key, $value]);
+                $fKey = null;
+                $type = null;
+                if ($model instanceof \yii\boxy\ActiveRecord) {
+                    $fKey = $model->getAttributeRealName($key);
+                } elseif ($model instanceof \yii\db\ActiveRecord) {
+                    $fKey = $model->getTableSchema()->getColumn($key);
+                    $type = $fKey->phpType;
+                } elseif ($model instanceof \yii\base\Model) {
+                    $fKey = (isset($model->attributes()[$key])) ? $model->attributes()[$key] : null;
+                } else $fKey = $key;
+
+                $query->andFilterWhere(['ilike', $fKey, $value]);
             }
         }
     }
