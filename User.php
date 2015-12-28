@@ -51,7 +51,7 @@ abstract class User extends \yii\boxy\ActiveRecord implements \yii\web\IdentityI
     public static function findByLogin($login) {
         // try login as login, email or phone
         $userQuery = static::find();
-        $userQuery->where(['login' => $login]);
+        $userQuery->andWhere(['login' => $login]);
 
         return $userQuery->one();
     }
