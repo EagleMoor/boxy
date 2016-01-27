@@ -13,6 +13,7 @@ class Helper
 {
     public static function arr2pgarr($value)
     {
+        $parts = array();
         foreach ((array)$value as $inner) {
             if (is_array($inner)) $parts[] = self::arr2pgarr($inner);
             elseif ($inner === null) {
