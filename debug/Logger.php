@@ -1,14 +1,8 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace yii\boxy_debug;
 
 use Yii;
-use yii\base\Component;
 
 class Logger extends \yii\log\Logger
 {
@@ -18,27 +12,33 @@ class Logger extends \yii\log\Logger
 	 */
 	public function flush($final = false)
 	{
-		if($final){
+		if ($final) {
 			$duration = \Yii::$app->formatter->asDecimal(microtime(true) - YII_BEGIN_TIME, 4);
 
-
 			$debug_id = '';
+			$timeLimit = 1;
 
 			if ($debug = \Yii::$app->getModule('debug')) {
 				$debug_id = (isset($debug->logTarget) && isset($debug->logTarget->tag)) ? $debug->logTarget->tag
 					: 'undefined';
 			}
-			$memory  = sprintf('%.1f MB', memory_get_peak_usage() / 1048576);
-			\Yii::info( implode(
-				'   ',
-				[
+
+			/** @var \yii\boxy_debug\Module $overhead */
+			if ($overhead = \Yii::$app->getModule('overhead')) {
+				$timeLimit = $overhead->timeLimit;
+			}
+
+			if ($duration >= $timeLimit) {
+				$memory = sprintf('%.1f MB', memory_get_peak_usage() / 1048576);
+
+				\Yii::info(implode('   ', [
 					$debug_id,
 					Yii::$app->request->method,
-					Yii::$app->request->url,
-					$duration,
+					$duration . ' s',
 					$memory,
-				]
-			), 'overhead');
+					Yii::$app->request->url,
+				]), 'overhead');
+			}
 		}
 
 		parent::flush($final);
